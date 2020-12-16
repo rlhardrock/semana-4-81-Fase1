@@ -1,11 +1,19 @@
-const router = require('express').Router()
-const categoriaController = require('../../controllers/CategoriaController')
-const auth = require('../../middlewares/auth')
+/* router.put('/deactivate', auth.verificarVendedor, categoriaController.deactivate); */
+const routerx = require('express-promise-router');
+const router = require('express').Router();
+const auth = require('../../middlewares/auth');
 
-router.get('/list', auth.verificarVendedor, categoriaController.list);
-router.post('/add', auth.verificarVendedor, categoriaController.add);
-router.put('/update', auth.verificarVendedor, categoriaController.update);
-router.put('/activate', auth.verificarVendedor, categoriaController.activate);
-router.put('/deactivate', auth.verificarVendedor, categoriaController.deactivate);
+const routerx = require('express-promise-router');
+const categoriaController = require('../controllers/CategoriaController');
+const categoriaController = require('../../controllers/CategoriaController');
+const router = routerx();
+
+router.post('/add',categoriaController.add);
+router.get('/query',categoriaController.query);
+router.get('/list',categoriaController.list);
+router.put('/update',categoriaController.update);
+router.delete('/remove',categoriaController.remove);
+router.put('/activate',categoriaController.activate);
+router.put('/deactivate',categoriaController.deactivate);
 
 module.exports = router;
