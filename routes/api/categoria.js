@@ -1,12 +1,7 @@
-/* router.put('/deactivate', auth.verificarVendedor, categoriaController.deactivate); */
-const routerx = require('express-promise-router');
 const router = require('express').Router();
 const auth = require('../../middlewares/auth');
 
-const routerx = require('express-promise-router');
-const categoriaController = require('../controllers/CategoriaController');
-const categoriaController = require('../../controllers/CategoriaController');
-const router = routerx();
+const categoriaController = require('../../controllers/CategoriaController.js');
 
 router.post('/add',categoriaController.add);
 router.get('/query',categoriaController.query);
@@ -17,3 +12,5 @@ router.put('/activate',categoriaController.activate);
 router.put('/deactivate',categoriaController.deactivate);
 
 module.exports = router;
+
+// Bien

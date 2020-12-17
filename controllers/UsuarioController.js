@@ -1,13 +1,6 @@
 const models = require('../models')
 const bcrypt = require('bcryptjs')
-
-exports.login = async (rep, res, next) => {
-    try{
-        const models = await models.Usuario.findOne();
-    }catch(error){
-
-    }
-};
+const token = require('../services/token');
 
 exports.add = async (req, res, next) => {
     try {
@@ -20,7 +13,6 @@ exports.add = async (req, res, next) => {
         next(e);
     }
 };
-
 
 exports.query = async (req, res, next) => {
     try {
@@ -107,5 +99,71 @@ exports.deactivate = async (req, res, next) => {
             message: 'Ocurrió un error'
         });
         next(e);
+    }
+};
+
+exports.login = async (req, res, next) => {
+    try {
+        let user = await models.Usuario.findOne({ email: req.body.email, estado: 1 });
+        if (user) {
+            let match = await bcrypt.compare(req.body.password, user.password);
+            if (match) {
+                let tokenReturn = await token.encode(user._id);
+                res.status(200).json({ user, tokenReturn });
+            } else {
+                res.status(404).send({
+                    message: 'Password Incorrecto'
+                });
+            }
+        } else {
+            res.status(404).send({
+                message: 'No existe el usuario'
+            });
+        }
+    } catch (e) {
+        res.status(500).send({
+            message: 'Ocurrió un error'
+        });
+        next(e);
+    }
+}
+
+exports.signin = async(req, res, next) =>{
+    try{
+        const user = await models.user.findOne({where: {email:req.body.email}});
+        if (user) {
+            const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+            if (passwordIsValid) {
+                /* const token = await  */
+                const token = jwt.sign({
+                    id: user.id,
+                    nombre: user.nombre,
+                    email: user.email,
+                    rol: user.rol,
+                    estado: user.estado
+                },'config.secret',{
+                    expiresIn: 86400,
+                }
+                );
+                res.status(200).send({
+                    auth: true,
+                    accessToken: token,
+                    // user: user
+                })
+            }else{
+                res.status(401).json({
+                    error: 'Error 401 -Password Incorrecto'
+                })
+            }
+        }else{
+            res.status(404).json({
+                error: 'Error 404 - No existe el usuario'
+            })
+        }
+    }catch(error){
+        res.status(500).send({
+        message:'Error-500 - Ocurrió un error'
+        }),
+    next(error);
     }
 };
