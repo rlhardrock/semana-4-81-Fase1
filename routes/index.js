@@ -1,10 +1,12 @@
-const articuloRouter = require('./api/articulo');
-router.use('/articulo', articuloRouter);
+const router = require('express').Router();
 
-const usuarioRouter = require('./api/usuario');
-router.use('/usuario', usuarioRouter);
+const apiRouterUsuario = require('./api/usuario.js');
+router.use('/auth', apiRouterUsuario);
 
-const categoriaRouter = require('./api/categoria');
-router.use('/categoria', categoriaRouter);
+const apiRouterArticulo = require('./api/articulo.js');
+router.use('/auth', apiRouterArticulo);
+
+const apiRouterCategoria = require('./api/categoria.js');
+router.use('/auth', apiRouterCategoria);
 
 module.exports = router;
