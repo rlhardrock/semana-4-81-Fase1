@@ -11,8 +11,8 @@ router.delete('/remove',usuarioController.remove);
 router.put('/activate',usuarioController.activate);
 router.put('/deactivate',usuarioController.deactivate);
 
-router.post('/register',usuarioController.register);
-router.post('/login', auth.verificarAdministrador)
+/* router.post('/register',usuarioController.register); */
+router.post('/login', usuarioController.login);
 
 
 module.exports = router;
