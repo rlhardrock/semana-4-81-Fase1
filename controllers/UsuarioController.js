@@ -116,8 +116,8 @@ exports.login = async(req, res, next) =>{
         if (user) {
             const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
             if (passwordIsValid) {
-                /* const token = await models. */
-                const token = jwt.sign({
+                /* const token = services.token(user); */
+                const token = token.encode(user);/* jwt.sign({
                     id: user.id,
                     nombre: user.nombre,
                     email: user.email,
@@ -125,7 +125,7 @@ exports.login = async(req, res, next) =>{
                     estado: user.estado
                 },'config.secret',{
                     expiresIn: 86400,
-                });
+                }) */
                 res.status(200).send({
                     auth: true,
                     accessToken: token,

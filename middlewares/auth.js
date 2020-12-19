@@ -1,21 +1,37 @@
 //Middleware de autenticacion;
-const tokenService = require('../services/token');
+const tokenServices = require('../services/token');
 
 module.exports = {
-    verificarUsuario: async(req, res, next) => {
+    verificarAdministrador: async(req, res, next) => {
             if (!req.headers.token) {
                 return res.status(404).send({
-                    message: 'No token'
+                    message: 'Token perdido en acción'
                 });
             }else{
-                const response = await tokenService.decode(req.headers.token);
-                if (response.rol === 'Administrador' || response.rol === 'Vendedor' || response.rol === 'Almacenero') {
+                const response = await tokenServices.decode(req.headers.token);
+                if (response.rol === 'Administrador') {
                     next();
                 }else{
                     return res.status(403).send({
-                    message: 'No autorizado'
+                    message: 'Usted no tiene Autorización o Permisos'
                 });
             }
         }
+    },
+    verificarVendedor: async (req, res, next) => {
+        if (!req.headers.token) {
+            return res.status(404).send({
+                message: 'Token perdido en acción'
+            });
+        }else{
+            const response = await tokenServices.decode(req.headers.token);
+            if (response.rol === 'Vendedor' || response.rol === 'Administrador') {
+                next();
+            }else{
+                return res.status(403).send({
+                message: 'Usted no tiene Autorización o Permisos'
+            });
+        }
+    }
     }
 }
