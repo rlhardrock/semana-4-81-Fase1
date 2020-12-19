@@ -1,8 +1,7 @@
-const controller = require('./controllers/UsuarioController.js');
 const express = require('express'); //
 const morgan = require('morgan'); //***
 const cors = require('cors'); //
-const router = require('./routes');   //('./routes/index.js');
+const router = require('./routes/index');   //('./routes/index.js');
 const path = require('path');
 const bodyParser = require('body-parser'); //
 const app = express();
@@ -16,6 +15,8 @@ app.use(function(req, res, next) {
 
 app.use(morgan('dev'));  //
 app.use(cors());  //
+app.options('*', cors);
+
 app.use(bodyParser.json()); //
 app.use(bodyParser.urlencoded({ extended: true })); //
 
@@ -27,11 +28,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', router); //
 
-app.get('/api/usuario', (req, res) => {
+app.get('/api/*', (req, res) => {
     db.usuario.findAll().then(users => res.json(users));
 })
-
-app.post('/api/usuario/login', controller.login);
 
 app.get('/', function(req, res) {
     console.log("Estructura base del proyecto backend");

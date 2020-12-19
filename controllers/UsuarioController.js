@@ -32,12 +32,18 @@ exports.query = async (req, res, next) => {
         });
         next(e);
     }
-}
+};
 
 exports.list = async (req, res, next) => {
     try {
         const reg = await models.Usuario.findAll();
-        res.status(200).json(reg);
+        if (!reg) {
+            res.status(404).send({
+                message: 'El registro no existe'
+            });
+        } else {
+            res.status(200).json(reg);
+        }
     } catch (e) {
         res.status(500).send({
             message: 'Ocurrió un error'
@@ -110,7 +116,7 @@ exports.login = async(req, res, next) =>{
         if (user) {
             const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
             if (passwordIsValid) {
-                /* const token = await  */
+                /* const token = await models. */
                 const token = jwt.sign({
                     id: user.id,
                     nombre: user.nombre,
