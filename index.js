@@ -1,32 +1,49 @@
-const express = require('express');
-const morgan = require('morgan');
-const cors = require('cors');
-const router = require('./routes');
+const controller = require('./controllers/UsuarioController.js');
+const express = require('express'); //
+const morgan = require('morgan'); //***
+const cors = require('cors'); //
+const router = require('./routes');   //('./routes/index.js');
 const path = require('path');
-
-
-const bodyParser = require('body-parser');
-
-
+const bodyParser = require('body-parser'); //
 const app = express();
-app.use(morgan('dev'));
-app.use(cors());
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }));
+const db = require('./models');
+
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
+app.use(morgan('dev'));  //
+app.use(cors());  //
+app.use(bodyParser.json()); //
+app.use(bodyParser.urlencoded({ extended: true })); //
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api', router);
+// API ENDPOINTS
 
-app.set('port', process.env.PORT || 3000);
+app.use('/api', router); //
 
+app.get('/api/usuario', (req, res) => {
+    db.usuario.findAll().then(users => res.json(users));
+})
 
+app.post('/api/usuario/login', controller.login);
+
+app.get('/', function(req, res) {
+    console.log("Estructura base del proyecto backend");
+    res.send("Estructura base del proyecto backend");
+}); //
+
+app.set('PORT', process.env.PORT || 3000); //
 
 if (process.env.NODE_ENV !== 'test') {
-    app.listen(app.get('port'), () => {
-        console.log('Server on port ' + app.get('port') + ' on dev');
+    app.listen(app.get('PORT'), () => {
+        console.log('Server on PORT ' + app.get('PORT') + ' on dev');
+        console.log('Server up');
     });
 }
 
