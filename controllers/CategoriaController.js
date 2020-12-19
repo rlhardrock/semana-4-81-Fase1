@@ -1,18 +1,24 @@
 const models = require('../models')
 const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken');
-const token = require('../services/token');
+
 
 exports.add = async (req, res, next) => {
     try {
-        req.body.password = bcrypt.hashSync(req.body.password);
-        const reg = await models.Categoria.create(req.body);
-        res.status(200).json(reg);
-    } catch (e) {
+        const user = await models.Categoria.findOne({where: {descripcion:req.body.descripcion}});
+        if (user){
+            res.status(409).send({
+                message: 'GAME OVER'
+            })
+        }else{
+            req.body.password = bcrypt.hashSync(req.body.password, 10);
+            const user = await models.Categoria.create(req.body);
+            res.status(200).json(user);
+        }
+    } catch (error) {
         res.status(500).send({
-            message: 'Ocurrió un error'
+            message: 'GAME OVER'
         });
-        next(e);
+        next(error);
     }
 };
 
@@ -37,21 +43,23 @@ exports.query = async (req, res, next) => {
 
 exports.list = async (req, res, next) => {
     try {
-        const reg = await models.Categoria.findAll();
-        if (!reg) {
+        const user = await models.Categoria.findAll();
+        if (user) {
+            res.status(200).json(user);
+        }else{
             res.status(404).send({
-                message: 'El registro no existe'
+                message: 'GAME OVER'
             });
-        } else {
-            res.status(200).json(reg);
-        }
-    } catch (e) {
+       }
+    } catch (error) {
         res.status(500).send({
-            message: 'Ocurrió un error'
+            message: 'GAME OVER'
         });
-        next(e);
+        next(error);
     }
 };
+
+
 
 exports.remove = async (req, res, next) => {
     try {
@@ -67,15 +75,23 @@ exports.remove = async (req, res, next) => {
 };
 
 exports.update = async (req, res, next) => {
-    try {
-        const reg = await models.Categoria.update({
-            nombre: req.body.nombre, 
-            descripcion: req.body.descripcion
-        }, { where: { id: req.body._id } });
-        res.status(200).json(reg);
+    try {  // 
+        const user = await models.Categoria.findOne({ where: { id:req.body.id}});
+        if(user){
+            const user = await models.Categoria.update({nombre: req.body.nombre},
+                { where: { 
+                    email: req.body.email
+                },
+            });
+            res.status(200).json(user);
+        }else{
+            res.status(404).send({
+                    message: 'GAME OVER'
+            });
+        }
     } catch (e) {
         res.status(500).send({
-            message: 'Ocurrió un error'
+            message: 'GAME OVER'
         });
         next(e);
     }

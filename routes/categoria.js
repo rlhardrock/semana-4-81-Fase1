@@ -2,13 +2,13 @@ const router = require('express').Router();
 const auth = require('../middlewares/auth');
 const categoriaController = require('../controllers/CategoriaController.js');
 
-router.post('/add',auth.verificarUsuario,categoriaController.add);
+router.post('/add',auth.verificarAdministrador,categoriaController.add);
 
-router.get('/list',auth.verificarUsuario,categoriaController.list);
-router.put('/update',auth.verificarUsuario,categoriaController.update);
+router.get('/list',categoriaController.list);
+router.put('/update',auth.verificarAdministrador,categoriaController.update);
 
-router.put('/activate',auth.verificarUsuario,categoriaController.activate);
-router.put('/deactivate',auth.verificarUsuario,categoriaController.deactivate);
+router.put('/activate',auth.verificarAdministrador,categoriaController.activate);
+router.put('/deactivate',auth.verificarAdministrador,categoriaController.deactivate);
 
 module.exports = router;
 
