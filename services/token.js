@@ -41,7 +41,7 @@ module.exports = {
     }
     }
 }
-
+/* 
 models.exports = {
     encode: async(user) => {
         const token = jwt.sign({
@@ -74,6 +74,6 @@ models.exports = {
 
     }
 
-}
+} */
 
 

@@ -1,7 +1,11 @@
-const models = require('../models');
+const models = require('../models')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken');
+const token = require('../services/token');
 
 exports.add = async (req, res, next) => {
     try {
+        req.body.password = bcrypt.hashSync(req.body.password, 10);
         const reg = await models.Articulo.create(req.body);
         res.status(200).json(reg);
     } catch (e) {
@@ -29,12 +33,18 @@ exports.query = async (req, res, next) => {
         });
         next(e);
     }
-}
+};
 
 exports.list = async (req, res, next) => {
     try {
         const reg = await models.Articulo.findAll();
-        res.status(200).json(reg);
+        if (!reg) {
+            res.status(404).send({
+                message: 'El registro no existe'
+            });
+        } else {
+            res.status(200).json(reg);
+        }
     } catch (e) {
         res.status(500).send({
             message: 'Ocurrió un error'

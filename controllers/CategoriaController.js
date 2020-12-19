@@ -1,7 +1,11 @@
-const models = require('../models');
+const models = require('../models')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken');
+const token = require('../services/token');
 
 exports.add = async (req, res, next) => {
     try {
+        req.body.password = bcrypt.hashSync(req.body.password);
         const reg = await models.Categoria.create(req.body);
         res.status(200).json(reg);
     } catch (e) {
@@ -29,12 +33,18 @@ exports.query = async (req, res, next) => {
         });
         next(e);
     }
-}
+};
 
 exports.list = async (req, res, next) => {
     try {
         const reg = await models.Categoria.findAll();
-        res.status(200).json(reg);
+        if (!reg) {
+            res.status(404).send({
+                message: 'El registro no existe'
+            });
+        } else {
+            res.status(200).json(reg);
+        }
     } catch (e) {
         res.status(500).send({
             message: 'Ocurrió un error'
@@ -46,11 +56,7 @@ exports.list = async (req, res, next) => {
 exports.remove = async (req, res, next) => {
     try {
         const reg = await models.Categoria.destroy({
-            where: {
-                _id:
-                    req.body._id
-            }
-        });
+            where: { _id: req.body._id } });
         res.status(200).json(reg);
     } catch (e) {
         res.status(500).send({
@@ -63,8 +69,8 @@ exports.remove = async (req, res, next) => {
 exports.update = async (req, res, next) => {
     try {
         const reg = await models.Categoria.update({
-            nombre: req.body.nombre, descripcion:
-                req.body.descripcion
+            nombre: req.body.nombre, 
+            descripcion: req.body.descripcion
         }, { where: { id: req.body._id } });
         res.status(200).json(reg);
     } catch (e) {
@@ -86,7 +92,6 @@ exports.activate = async (req, res, next) => {
         });
         next(e);
     }
-
 };
 
 exports.deactivate = async (req, res, next) => {

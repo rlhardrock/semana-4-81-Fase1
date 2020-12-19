@@ -1,15 +1,14 @@
 const router = require('express').Router();
 const auth = require('../../middlewares/auth');
-
 const articuloController = require('../../controllers/ArticuloController.js');
 
-router.post('/add', articuloController.add);
-router.get('/query', articuloController.query);
-router.get('/list',articuloController.list);
-router.put('/update',articuloController.update);
-router.delete('remove',articuloController.remove);
-router.put('/activate',articuloController.activate);
-router.put('/deactivate',articuloController.deactivate);
+router.post('/add',auth.verificarUsuario, articuloController.add);
+router.get('/query',auth.verificarUsuario, articuloController.query);
+router.get('/list',auth.verificarUsuario,articuloController.list);
+router.put('/update',auth.verificarUsuario,articuloController.update);
+router.delete('/remove',auth.verificarUsuario,articuloController.remove);
+router.put('/activate',auth.verificarUsuario,articuloController.activate);
+router.put('/deactivate',auth.verificarUsuario,articuloController.deactivate);
 
 module.exports = router;
 
