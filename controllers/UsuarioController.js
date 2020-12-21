@@ -97,8 +97,8 @@ exports.update = async (req, res, next) => {
 
 exports.activate = async (req, res, next) => {
     try {
-        console.log(req.body._id);
-        const reg = await models.Usuario.update({ estado: 1 }, { where: { id: req.body._id } });
+        console.log(req.body.id);
+        const reg = await models.Usuario.update({ estado: 0 }, { where: { id: req.body.id } });
         res.status(200).json(reg);
     } catch (e) {
         res.status(500).send({
@@ -111,8 +111,8 @@ exports.activate = async (req, res, next) => {
 
 exports.deactivate = async (req, res, next) => {
     try {
-        const reg = await models.Usuario.update({ estado: 0 }, { where: { id: req.body._id } });
-        res.status(200).json(reg);
+        const user = await models.Usuario.update({ estado: 1 }, { where: { id: req.body.id } });
+        res.status(200).json(user);
     } catch (e) {
         res.status(500).send({
             message: 'GAME OVER'
